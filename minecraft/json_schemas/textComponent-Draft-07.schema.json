@@ -1,0 +1,545 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "definitions": {
+        "textComponentObject": {
+            "type": "object",
+            "properties": {
+                "type": {
+                    "description": "Optional. Specifies the content type. One of \"text\", \"translatable\", \"score\", \"selector\", \"keybind\", or \"nbt\".\nIf type is not present, has an invalid value, or if the required tags for the specified type are not present, the type is determined automatically by checking the object for the following tags: text, translate, score, selector, keybind, and finally nbt. If multiple are present, whichever one comes first in that list is used.",
+                    "type": "string",
+                    "enum": [
+                        "text",
+                        "translatable",
+                        "score",
+                        "selector",
+                        "keybind",
+                        "nbt"
+                    ]
+                },
+                "extra": {
+                    "description": "A list of additional raw JSON text components to be displayed after this one.\nA child text component. Child text components inherit all formatting and interactivity from the parent component, unless they explicitly override them.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/textComponent"
+                    }
+                },
+                "color": {
+                    "description": "Optional. Changes the color to render the content in the text component object and its child objects. If not present, the parent color will be used instead. The color is specified as a color code or as a color name.",
+                    "type": "string",
+                    "oneOf": [
+                        {
+                            "description": "6-digit hexadecimal color, changes the color to #<hex>",
+                            "pattern": "^#[0-9a-fA-F]{6}$"
+                        },
+                        {
+                            "description": "changes the color to #000000",
+                            "const": "black"
+                        },
+                        {
+                            "description": "changes the color to #0000AA",
+                            "const": "dark_blue"
+                        },
+                        {
+                            "description": "changes the color to #00AA00",
+                            "const": "dark_green"
+                        },
+                        {
+                            "description": "changes the color to #00AAAA",
+                            "const": "dark_aqua"
+                        },
+                        {
+                            "description": "changes the color to #AA0000",
+                            "const": "dark_red"
+                        },
+                        {
+                            "description": "changes the color to #AA00AA",
+                            "const": "dark_purple"
+                        },
+                        {
+                            "description": "changes the color to #FFAA00",
+                            "const": "gold"
+                        },
+                        {
+                            "description": "changes the color to #AAAAAA",
+                            "const": "gray"
+                        },
+                        {
+                            "description": "changes the color to #555555",
+                            "const": "dark_gray"
+                        },
+                        {
+                            "description": "changes the color to #5555FF",
+                            "const": "blue"
+                        },
+                        {
+                            "description": "changes the color to #55FF55",
+                            "const": "green"
+                        },
+                        {
+                            "description": "changes the color to #55FFFF",
+                            "const": "aqua"
+                        },
+                        {
+                            "description": "changes the color to #FF5555",
+                            "const": "red"
+                        },
+                        {
+                            "description": "changes the color to #FF55FF",
+                            "const": "light_purple"
+                        },
+                        {
+                            "description": "changes the color to #FFFF55",
+                            "const": "yellow"
+                        },
+                        {
+                            "description": "changes the color to #FFFFFF",
+                            "const": "white"
+                        }
+                    ]
+                },
+                "font": {
+                    "description": "Optional. The resource location of the font for this component in the resource pack within assets/<namespace>/font. Defaults to \"minecraft:default\".",
+                    "type": "string",
+                    "default": "minecraft:default"
+                },
+                "bold": {
+                    "description": "Optional. Whether to render the content in bold",
+                    "type": "boolean"
+                },
+                "italic": {
+                    "description": "Optional. Whether to render the content in italics. Note that text that is italicized by default, such as custom item names, can be unitalicized by setting this to false.",
+                    "type": "boolean"
+                },
+                "underlined": {
+                    "description": "Optional. Whether to underline the content.",
+                    "type": "boolean"
+                },
+                "strikethrough": {
+                    "description": "Optional. Whether to strikethrough the content.",
+                    "type": "boolean"
+                },
+                "obfuscated": {
+                    "description": "Optional. Whether to render the content obfuscated.",
+                    "type": "boolean"
+                },
+                "insertion": {
+                    "description": "Optional. When the text is shift-clicked by a player, this string is inserted in their chat input. It does not overwrite any existing text the player was writing. This only works in chat messages.",
+                    "type": "string"
+                },
+                "clickEvent": {
+                    "description": "Optional. Allows for events to occur when the player clicks on text. Only work in chat messages and written books, unless specified otherwise.",
+                    "type": "object",
+                    "properties": {
+                        "action": {
+                            "description": "The action to perform when clicked.",
+                            "type": "string",
+                            "oneOf": [
+                                {
+                                    "description": "Opens value as a URL in the user's default web browser.",
+                                    "const": "open_url"
+                                },
+                                {
+                                    "description": "Opens the file at value on the user's computer. This is used in messages automatically generated by the game (e.g., on taking a screenshot) and cannot be used by players for security reasons.",
+                                    "const": "open_file"
+                                },
+                                {
+                                    "description": "Works in signs, but only on the root text component, not on any children. Activated by using the sign. In chat and written books, this has value entered in chat as though the player typed it themselves and pressed enter. However, this can only be used to run commands that do not send chat messages directly (like /say, /tell, and/teammsg). Since they are being run from chat, commands must be prefixed with the usual \"/\" slash, and player must have the required permissions. In signs, the command is run by the server at the sign's location, with the player who used the sign as the command executor (that is, the entity selected by @s). Since they are run by the server, sign commands have the same permission level as a command block instead of using the player's permission level, are not restricted by chat length limits, and do not need to be prefixed with a \"/\" slash.",
+                                    "const": "run_command"
+                                },
+                                {
+                                    "description": "Opens chat and fills in value. If a chat message was already being composed, it is overwritten. This does not work in books.",
+                                    "const": "suggest_command"
+                                },
+                                {
+                                    "description": "Can only be used in written books. Changes to page value if that page exists",
+                                    "const": "change_page"
+                                },
+                                {
+                                    "description": "Copies value to the clipboard",
+                                    "const": "copy_to_clipboard"
+                                }
+                            ]
+                        },
+                        "value": {
+                            "description": "The URL, file path, chat, command or book page used by the specified action.",
+                            "type": "string"
+                        }
+                    }
+                },
+                "hoverEvent": {
+                    "description": "Optional. Allows for a tooltip to be displayed when the player hovers their mouse over text.",
+                    "type": "object",
+                    "properties": {
+                        "action": {
+                            "description": "The type of tooltip to show.",
+                            "type": "string",
+                            "oneOf": [
+                                {
+                                    "description": "Shows a raw JSON text component.",
+                                    "const": "show_text"
+                                },
+                                {
+                                    "description": "Shows the tooltip of an item as if it was being hovering over it in an inventory.",
+                                    "const": "show_item"
+                                },
+                                {
+                                    "description": "Shows an entity's name, type, and UUID. Used by selector.",
+                                    "const": "show_entity"
+                                }
+                            ]
+                        },
+                        "contents": {
+                            "type": "object"
+                        },
+                        "value": {
+                            "description": "Deprecated, use  contents instead. The formatting and type of this tag varies depending on the action.",
+                            "deprecated": true
+                        }
+                    },
+                    "required": [
+                        "action"
+                    ],
+                    "oneOf": [
+                        {
+                            "required": [
+                                "contents"
+                            ],
+                            "not": {
+                                "required": [
+                                    "value"
+                                ]
+                            }
+                        },
+                        {
+                            "required": [
+                                "value"
+                            ],
+                            "not": {
+                                "required": [
+                                    "contents"
+                                ]
+                            }
+                        }
+                    ],
+                    "dependencies": {
+                        "action": {
+                            "oneOf": [
+                                {
+                                    "properties": {
+                                        "action": {
+                                            "enum": [
+                                                "show_text"
+                                            ]
+                                        },
+                                        "contents": {
+                                            "description": "Another raw JSON text component. Can be any valid text component type: string, array, or object. Note that  clickEvent and  hoverEvent do not function within the tooltip.",
+                                            "$ref": "#/definitions/textComponent"
+                                        },
+                                        "value": {
+                                            "description": "Another raw JSON text component. Can be any valid text component type: string, array, or object. Note that  clickEvent and  hoverEvent do not function within the tooltip.",
+                                            "deprecated": true,
+                                            "$ref": "#/definitions/textComponent"
+                                        }
+                                    }
+                                },
+                                {
+                                    "properties": {
+                                        "action": {
+                                            "enum": [
+                                                "show_item"
+                                            ]
+                                        },
+                                        "contents": {
+                                            "description": "The item stack whose tooltip that should be displayed.",
+                                            "properties": {
+                                                "id": {
+                                                    "description": "The item's resource location. Defaults to minecraft:air if invalid.",
+                                                    "type": "string"
+                                                },
+                                                "count": {
+                                                    "description": "Optional. Size of the item stack. This typically does not change the content tooltip.",
+                                                    "type": "integer"
+                                                },
+                                                "tag": {
+                                                    "description": "Optional. A string containing the serialized NBT of the additional information about the item stack (its  tag tag), discussed more in Player.dat format § Item structure. Note that quotes within the serialized NBT need to be awkwardly escaped by prefixing them with a slash (e.g.,  \"{Enchantments:[{id:\\\"unbreaking\\\",lvl:1}]} \").",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "id"
+                                            ]
+                                        },
+                                        "value": {
+                                            "description": "A string containing the SNBT for an item stack. See Player.dat format § Item structure.",
+                                            "deprecated": true,
+                                            "type": "string"
+                                        }
+                                    }
+                                },
+                                {
+                                    "properties": {
+                                        "action": {
+                                            "enum": [
+                                                "show_entity"
+                                            ]
+                                        },
+                                        "contents": {
+                                            "description": "The entity whose tooltip should be displayed.",
+                                            "type": "object",
+                                            "properties": {
+                                                "name": {
+                                                    "description": "Optional. Hidden if not present. A raw JSON text that is displayed as the name of the entity.",
+                                                    "type": "object",
+                                                    "$ref": "#/definitions/textComponent"
+                                                },
+                                                "type": {
+                                                    "description": "A string containing the type of the entity, as a resource location. Defaults to minecraft:pig if invalid.",
+                                                    "type": "string"
+                                                },
+                                                "id": {
+                                                    "oneOf": [
+                                                        {
+                                                            "description": "A string representing the UUID in the hyphenated hexadecimal format. Must be a valid UUID.",
+                                                            "type": "string",
+                                                            "pattern": "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
+                                                        },
+                                                        {
+                                                            "type": "array",
+                                                            "items": {
+                                                                "type": "integer"
+                                                            },
+                                                            "minItems": 4,
+                                                            "maxItems": 4
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "type",
+                                                "id"
+                                            ]
+                                        },
+                                        "value": {
+                                            "description": "A string containing SNBT. The SNBT does not represent the full entity data, but only stores the name, type, and UUID of the entity.",
+                                            "deprecated": true,
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
+            "required": [],
+            "oneOf": [
+                {
+                    "properties": {
+                        "type": {
+                            "enum": [
+                                "text"
+                            ]
+                        },
+                        "text": {
+                            "description": "A string containing plain text to display directly.",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "text"
+                    ]
+                },
+                {
+                    "properties": {
+                        "translate": {
+                            "description": "A translation identifier, corresponding to the identifiers found in loaded language files. Displayed as the corresponding text in the player's selected language. If no corresponding translation can be found, the identifier itself is used as the translated text.",
+                            "type": "string"
+                        },
+                        "fallback": {
+                            "description": "Optional. If no corresponding translation can be found, this is used as the translated text. Ignored if  translate is not present.",
+                            "type": "string"
+                        },
+                        "with": {
+                            "description": "Optional. A list of raw JSON text components to be inserted into slots in the translation text. Ignored if  translate is not present.\nA raw JSON text component. If no component is provided for a slot, the slot is displayed as no text.",
+                            "type": "array",
+                            "items": [
+                                {
+                                    "$ref": "#/definitions/textComponent"
+                                }
+                            ]
+                        }
+                    },
+                    "required": [
+                        "translate"
+                    ]
+                },
+                {
+                    "properties": {
+                        "type": {
+                            "enum": [
+                                "score"
+                            ]
+                        },
+                        "score": {
+                            "description": "Displays a score holder's current score in an objective. Displays nothing if the given score holder or the given objective do not exist, or if the score holder is not tracked in the objective.",
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "description": "The name of the score holder whose score should be displayed. This can be a selector like @p or an explicit name. If the text is a selector, the selector must be guaranteed to never select more than one entity, possibly by adding limit=1. If the text is \"*\", it shows the reader's own score (for example, /tellraw @a {\"score\":{\"name\":\"*\",\"objective\":\"obj\"}} shows every online player their own score in the \"obj\" objective).The name of the score holder whose score should be displayed. This can be a selector like @p or an explicit name. If the text is a selector, the selector must be guaranteed to never select more than one entity, possibly by adding limit=1. If the text is \"*\", it shows the reader's own score (for example, /tellraw @a {\"score\":{\"name\":\"*\",\"objective\":\"obj\"}} shows every online player their own score in the \"obj\" objective).",
+                                    "type": "string"
+                                },
+                                "objective": {
+                                    "description": "The internal name of the objective to display the player's score in.",
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "name",
+                                "objective"
+                            ]
+                        }
+                    },
+                    "required": [
+                        "score"
+                    ]
+                },
+                {
+                    "properties": {
+                        "type": {
+                            "enum": [
+                                "selector"
+                            ]
+                        },
+                        "selector": {
+                            "description": "A string containing a selector.",
+                            "type": "string"
+                        },
+                        "separator": {
+                            "description": "Optional, defaults to {\"color\": \"gray\", \"text\": \", \"}. A raw JSON text component. Used as the separator between different names, if the component selects multiple entities.",
+                            "$ref": "#/definitions/textComponent"
+                        }
+                    },
+                    "required": [
+                        "selector"
+                    ]
+                },
+                {
+                    "properties": {
+                        "type": {
+                            "enum": [
+                                "keybind"
+                            ]
+                        },
+                        "keybind": {
+                            "description": "A keybind identifier, to be displayed as the name of the button that is currently bound to that action. For example, {\"keybind\": \"key.inventory\"} displays \"e\" if the player is using the default control scheme.",
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "keybind"
+                    ]
+                },
+                {
+                    "properties": {
+                        "type": {
+                            "enum": [
+                                "nbt"
+                            ]
+                        },
+                        "source": {
+                            "description": "Optional. Allowed values are \"block\", \"entity\", and \"storage\", corresponding to the source of the NBT data.",
+                            "type": "string",
+                            "enum": [
+                                "block",
+                                "entity",
+                                "storage"
+                            ]
+                        },
+                        "nbt": {
+                            "description": "The NBT path used for looking up NBT values from an entity, block entity, or storage. Requires one of  block,  entity, or  storage. Having more than one is allowed, but only one is used."
+                        },
+                        "interpret": {
+                            "description": "Optional, defaults to false. If true, the game attempts to parse the text of each NBT value as a raw JSON text component. Ignored if  nbt is not present.",
+                            "type": "boolean"
+                        },
+                        "separator": {
+                            "description": "separator: Optional, defaults to {\"text\": \", \"}. A raw JSON text component. Used as the separator between different tags, if the component selects multiple tags.",
+                            "$ref": "#/definitions/textComponent"
+                        }
+                    },
+                    "required": [
+                        "nbt"
+                    ],
+                    "oneOf": [
+                        {
+                            "properties": {
+                                "source": {
+                                    "enum": [
+                                        "block"
+                                    ]
+                                },
+                                "block": {
+                                    "description": "A string specifying the coordinates of the block entity from which the NBT value is obtained. The coordinates can be absolute, relative, or local. Ignored if  nbt is not present.",
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "block"
+                            ]
+                        },
+                        {
+                            "properties": {
+                                "source": {
+                                    "enum": [
+                                        "entity"
+                                    ]
+                                },
+                                "entity": {
+                                    "description": "A string specifying the target selector for the entity or entities from which the NBT value is obtained. Ignored if  nbt is not present.",
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "entity"
+                            ]
+                        },
+                        {
+                            "properties": {
+                                "source": {
+                                    "enum": [
+                                        "storage"
+                                    ]
+                                },
+                                "storage": {
+                                    "description": "A string specifying the resource location of the command storage from which the NBT value is obtained. Ignored if  nbt is not present.",
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "storage"
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "textComponent": {
+            "description": "Raw JSON text is made up of text components. There is a single root component, which can have child components, which can have their own children and so on. Components can also have formatting and interactivity added to them, which is inherited by their children.\nA raw JSON text component can be a  JSON string,  JSON array or a  JSON object. Strings and arrays are both shorthand for longer object structures, as described below",
+            "oneOf": [
+                {
+                    "type": "string"
+                },
+                {
+                    "$ref": "#/definitions/textComponentObject"
+                },
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/textComponent"
+                    }
+                }
+            ]
+        }
+    },
+    "$ref": "#/definitions/textComponent"
+}
