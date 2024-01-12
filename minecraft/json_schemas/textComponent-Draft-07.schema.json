@@ -362,11 +362,9 @@
                         "with": {
                             "description": "Optional. A list of raw JSON text components to be inserted into slots in the translation text. Ignored if  translate is not present.\nA raw JSON text component. If no component is provided for a slot, the slot is displayed as no text.",
                             "type": "array",
-                            "items": [
-                                {
-                                    "$ref": "#/definitions/textComponent"
-                                }
-                            ]
+                            "items": {
+                                "$ref": "#/definitions/textComponent"
+                            }
                         }
                     },
                     "required": [
